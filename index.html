@@ -11,26 +11,21 @@
   *{margin:0;padding:0;box-sizing:border-box;}
   :root{
     --green-900:#0b3d22; --green-800:#114d2c; --green-700:#1a7a3d;
-    --green-600:#239850; --green-300:#7ac88f;
-    --gold:#e3a712; --gold-2:#c98a06;
+    --green-600:#239850; --gold:#e3a712; --gold-2:#c98a06;
     --ink:#0a2c19; --line:#1a7a3d; --coord:#d4452f;
     --bg:#f4f9f5; --card:#ffffff; --muted:#5a7565;
   }
   html,body{background:transparent;}
   body{
     font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;
-    color:var(--ink);
-    -webkit-font-smoothing:antialiased;
+    color:var(--ink);-webkit-font-smoothing:antialiased;
   }
   .so-wrap{
     background:
       radial-gradient(ellipse 70% 50% at 15% 0%, rgba(227,167,18,.10), transparent 55%),
       radial-gradient(ellipse 70% 55% at 85% 100%, rgba(26,122,61,.12), transparent 55%),
       linear-gradient(180deg,#f4f9f5 0%,#eef6f0 100%);
-    padding:52px 20px 60px;
-    position:relative;
-    overflow:hidden;
-    min-height:100vh;
+    padding:48px 16px 56px;position:relative;overflow:hidden;min-height:100vh;
   }
   .so-wrap::before{
     content:"";position:absolute;inset:0;
@@ -43,7 +38,7 @@
     border-radius:50%;pointer-events:none;
   }
 
-  .so-header{text-align:center;margin-bottom:46px;position:relative;z-index:2;}
+  .so-header{text-align:center;margin-bottom:40px;position:relative;z-index:2;}
   .so-crest{
     width:54px;height:54px;margin:0 auto 14px;border-radius:50%;
     background:linear-gradient(135deg,var(--green-700),var(--green-900));
@@ -58,156 +53,189 @@
     border:1px solid rgba(227,167,18,.25);
   }
   .so-title{
-    font-family:'Fraunces',Georgia,serif;font-size:clamp(28px,4vw,46px);
+    font-family:'Fraunces',Georgia,serif;font-size:clamp(26px,4vw,44px);
     font-weight:700;color:var(--green-800);margin:0 0 8px;letter-spacing:-.02em;line-height:1.1;
   }
-  .so-subtitle{font-size:14.5px;color:var(--muted);margin:0;font-weight:500;}
+  .so-subtitle{font-size:14px;color:var(--muted);margin:0;font-weight:500;}
   .so-divider{
-    width:64px;height:3px;margin:18px auto 0;border-radius:2px;
+    width:60px;height:3px;margin:16px auto 0;border-radius:2px;
     background:linear-gradient(90deg,var(--gold),var(--green-600));
   }
 
-  .so-scroll{overflow-x:auto;padding:8px 4px 14px;position:relative;z-index:2;-webkit-overflow-scrolling:touch;}
-  .so-tree{min-width:1180px;margin:0 auto;width:fit-content;}
-  .so-node{display:flex;flex-direction:column;align-items:center;position:relative;}
+  /* ====== CHART AREA: SVG garis + kartu di atasnya ====== */
+  .so-stage{position:relative;z-index:2;max-width:1240px;margin:0 auto;}
+  .so-canvas{position:relative;width:100%;}
+  .so-svg{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:visible;}
+  .so-svg path,.so-svg line{fill:none;stroke:var(--line);stroke-width:2.5;stroke-linecap:round;}
+  .so-svg .coord{stroke:var(--coord);stroke-dasharray:7 6;stroke-width:2.5;}
 
-  .so-children{display:flex;justify-content:center;gap:28px;position:relative;padding-top:40px;}
-  .so-children::before{
-    content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
-    width:3px;height:22px;background:var(--line);border-radius:2px;
-  }
-  .so-children.multi::after{
-    content:"";position:absolute;top:22px;height:3px;border-radius:2px;
-    background:var(--line);left:var(--bus-left,12%);right:var(--bus-right,12%);
-  }
-  .so-child{display:flex;flex-direction:column;align-items:center;position:relative;}
-  .so-children.multi .so-child::before,
-  .so-children.single .so-child::before{
-    content:"";position:absolute;top:-18px;left:50%;transform:translateX(-50%);
-    width:3px;height:18px;background:var(--line);border-radius:2px;
-  }
+  .so-grid{position:relative;z-index:2;display:grid;gap:30px 20px;}
 
-  /* garis koordinasi antar kasubdit */
-  .so-coord-line{
-    position:absolute;top:11px;left:25%;right:25%;height:20px;
-    border:2px dashed var(--coord);
-    border-bottom:none;border-radius:8px 8px 0 0;
-    z-index:1;pointer-events:none;
-  }
-  .so-coord-tag{
-    position:absolute;top:-2px;left:50%;transform:translateX(-50%);
-    font-size:9px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;
-    color:var(--coord);background:var(--bg);
-    padding:3px 12px;border-radius:50px;border:1px dashed var(--coord);
-    white-space:nowrap;z-index:3;
-  }
+  /* baris-baris hierarki */
+  .so-row{display:flex;justify-content:center;gap:20px;flex-wrap:nowrap;}
+  .so-col{display:flex;flex-direction:column;align-items:center;gap:30px;flex:1;}
 
   .so-card{
-    background:var(--card);border-radius:20px;padding:24px 20px 20px;
-    width:232px;text-align:center;position:relative;z-index:2;
-    box-shadow:0 1px 2px rgba(11,61,34,.05),0 10px 28px -10px rgba(11,61,34,.18);
-    border:1px solid rgba(26,122,61,.10);
-    transition:transform .4s cubic-bezier(.2,.85,.25,1),box-shadow .4s ease,border-color .4s ease;
-    animation:so-rise .7s cubic-bezier(.2,.85,.25,1) backwards;
+    background:var(--card);border-radius:18px;padding:20px 16px 16px;
+    width:200px;text-align:center;position:relative;
+    box-shadow:0 1px 2px rgba(11,61,34,.05),0 8px 22px -10px rgba(11,61,34,.18);
+    border:1px solid rgba(26,122,61,.10);cursor:pointer;
+    transition:transform .35s cubic-bezier(.2,.85,.25,1),box-shadow .35s ease,border-color .35s ease;
+    animation:so-rise .6s cubic-bezier(.2,.85,.25,1) backwards;
   }
-  .so-card:hover{
-    transform:translateY(-7px) scale(1.015);
-    box-shadow:0 2px 6px rgba(11,61,34,.08),0 24px 46px -14px rgba(11,61,34,.32);
-    border-color:var(--gold);
+  .so-card:hover,.so-card:focus-visible{
+    transform:translateY(-5px);
+    box-shadow:0 2px 6px rgba(11,61,34,.08),0 20px 38px -14px rgba(11,61,34,.30);
+    border-color:var(--gold);outline:none;
   }
   .so-card::before{
     content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
     width:0;height:4px;border-radius:0 0 4px 4px;
-    background:linear-gradient(90deg,var(--gold),var(--green-600));
-    transition:width .4s ease;
+    background:linear-gradient(90deg,var(--gold),var(--green-600));transition:width .35s ease;
   }
-  .so-card:hover::before{width:64%;}
+  .so-card:hover::before,.so-card:focus-visible::before{width:62%;}
 
   .so-photo{
-    width:86px;height:86px;border-radius:50%;margin:0 auto 14px;
+    width:74px;height:74px;border-radius:50%;margin:0 auto 12px;
     background:linear-gradient(135deg,var(--green-600),var(--green-800));
     display:flex;align-items:center;justify-content:center;color:#fff;
-    font-family:'Fraunces',serif;font-weight:700;font-size:27px;
-    border:3px solid #fff;
-    box-shadow:0 0 0 2px var(--gold),0 6px 14px rgba(11,61,34,.20);
-    overflow:hidden;transition:transform .45s ease;position:relative;
+    font-family:'Fraunces',serif;font-weight:700;font-size:23px;
+    border:3px solid #fff;box-shadow:0 0 0 2px var(--gold),0 6px 14px rgba(11,61,34,.20);
+    overflow:hidden;transition:transform .4s ease;position:relative;
   }
   .so-photo img{width:100%;height:100%;object-fit:cover;display:block;position:relative;z-index:1;}
   .so-photo .ini{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:0;}
-  .so-card:hover .so-photo{transform:scale(1.06) rotate(-2deg);}
+  .so-card:hover .so-photo{transform:scale(1.05);}
 
-  .so-name{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--green-800);margin:0 0 4px;line-height:1.3;}
-  .so-role{font-size:11.5px;color:var(--muted);margin:0;line-height:1.5;font-weight:500;}
+  .so-name{font-family:'Fraunces',serif;font-size:14px;font-weight:600;color:var(--green-800);margin:0 0 3px;line-height:1.3;}
+  .so-role{font-size:11px;color:var(--muted);margin:0;line-height:1.45;font-weight:500;}
   .so-badge{
-    display:inline-block;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+    display:inline-block;font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;
     color:var(--gold-2);background:rgba(227,167,18,.14);
-    padding:3px 11px;border-radius:50px;margin-bottom:8px;font-weight:700;
+    padding:3px 10px;border-radius:50px;margin-bottom:7px;font-weight:700;
   }
+  .so-tap{
+    margin-top:9px;font-size:9.5px;color:var(--green-600);font-weight:600;
+    opacity:.75;display:flex;align-items:center;justify-content:center;gap:4px;
+  }
+  .so-tap svg{width:11px;height:11px;}
 
   .so-card.direktur{
-    width:300px;color:#fff;border-color:var(--gold);
+    width:240px;color:#fff;border-color:var(--gold);
     background:linear-gradient(140deg,var(--green-700),var(--green-900));
   }
-  .so-card.direktur .so-name{color:#fff;font-size:18px;}
+  .so-card.direktur .so-name{color:#fff;font-size:16px;}
   .so-card.direktur .so-role{color:rgba(255,255,255,.82);}
   .so-card.direktur .so-badge{color:var(--green-900);background:var(--gold);}
-  .so-card.direktur .so-photo{
-    width:98px;height:98px;
-    box-shadow:0 0 0 3px var(--gold),0 8px 22px rgba(0,0,0,.25);
-  }
+  .so-card.direktur .so-photo{width:84px;height:84px;box-shadow:0 0 0 3px var(--gold),0 8px 22px rgba(0,0,0,.25);}
   .so-card.direktur::before{background:var(--gold);}
+  .so-card.direktur .so-tap{color:rgba(255,255,255,.85);}
 
-  .so-card.subdit{width:252px;background:linear-gradient(140deg,#ffffff,#f3faf4);border-color:rgba(227,167,18,.32);}
+  .so-card.subdit{width:218px;background:linear-gradient(140deg,#ffffff,#f3faf4);border-color:rgba(227,167,18,.32);}
   .so-card.subdit .so-badge{background:var(--green-700);color:#fff;}
-
-  .so-card.kasi{width:220px;}
-  .so-card.staf{width:210px;background:#fcfefc;}
-  .so-card.staf .so-photo{width:74px;height:74px;font-size:22px;}
+  .so-card.kasi{width:198px;}
+  .so-card.staf{width:188px;background:#fcfefc;}
+  .so-card.staf .so-photo{width:62px;height:62px;font-size:19px;}
   .so-card.staf .so-badge{background:rgba(26,122,61,.12);color:var(--green-700);}
 
-  @keyframes so-rise{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
-  .so-tree .so-card{animation-delay:calc(var(--d,0) * .08s);}
+  @keyframes so-rise{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ====== MODAL DETAIL ====== */
+  .so-modal{
+    position:fixed;inset:0;z-index:9999;display:none;
+    align-items:center;justify-content:center;padding:20px;
+    background:rgba(11,61,34,.55);backdrop-filter:blur(4px);
+    animation:so-fade .25s ease;
+  }
+  .so-modal.open{display:flex;}
+  @keyframes so-fade{from{opacity:0;}to{opacity:1;}}
+  .so-modal-box{
+    background:#fff;border-radius:22px;max-width:380px;width:100%;
+    padding:32px 26px 28px;text-align:center;position:relative;
+    box-shadow:0 30px 60px -20px rgba(11,61,34,.5);
+    animation:so-pop .35s cubic-bezier(.2,.9,.3,1.2);
+  }
+  @keyframes so-pop{from{opacity:0;transform:scale(.9) translateY(10px);}to{opacity:1;transform:scale(1) translateY(0);}}
+  .so-modal-close{
+    position:absolute;top:14px;right:14px;width:32px;height:32px;border:none;
+    background:rgba(11,61,34,.07);border-radius:50%;cursor:pointer;
+    font-size:18px;color:var(--green-800);line-height:1;
+    display:flex;align-items:center;justify-content:center;transition:background .2s;
+  }
+  .so-modal-close:hover{background:rgba(11,61,34,.15);}
+  .so-modal-photo{
+    width:100px;height:100px;border-radius:50%;margin:0 auto 16px;
+    background:linear-gradient(135deg,var(--green-600),var(--green-800));
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    font-family:'Fraunces',serif;font-weight:700;font-size:32px;
+    border:4px solid #fff;box-shadow:0 0 0 3px var(--gold),0 8px 20px rgba(11,61,34,.25);
+    overflow:hidden;position:relative;
+  }
+  .so-modal-photo img{width:100%;height:100%;object-fit:cover;position:relative;z-index:1;}
+  .so-modal-photo .ini{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:0;}
+  .so-modal-badge{
+    display:inline-block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+    color:#fff;background:var(--green-700);padding:4px 14px;border-radius:50px;
+    margin-bottom:10px;font-weight:700;
+  }
+  .so-modal-name{font-family:'Fraunces',serif;font-size:21px;font-weight:700;color:var(--green-800);margin:0 0 6px;}
+  .so-modal-role{font-size:13.5px;color:var(--muted);line-height:1.5;margin:0 0 16px;}
+  .so-modal-unit{
+    font-size:12px;color:var(--green-700);background:rgba(26,122,61,.08);
+    padding:10px 14px;border-radius:12px;line-height:1.5;
+    border-left:3px solid var(--green-600);text-align:left;
+  }
+  .so-modal-unit b{color:var(--green-800);}
 
   .so-legend{
-    display:flex;justify-content:center;gap:28px;flex-wrap:wrap;
-    margin-top:42px;padding-top:24px;font-size:12px;color:var(--muted);
+    display:flex;justify-content:center;gap:24px;flex-wrap:wrap;
+    margin-top:36px;padding-top:22px;font-size:12px;color:var(--muted);
     border-top:1px solid rgba(26,122,61,.12);position:relative;z-index:2;
   }
   .so-legend-item{display:flex;align-items:center;gap:8px;}
-  .so-legend-line{display:inline-block;width:34px;height:3px;background:var(--line);border-radius:2px;}
+  .so-legend-line{display:inline-block;width:32px;height:3px;background:var(--line);border-radius:2px;}
   .so-legend-line.coord{background:transparent;height:0;border-top:3px dashed var(--coord);}
 
-  .so-hint{text-align:center;font-size:11px;color:var(--muted);margin:18px 0 0;position:relative;z-index:2;display:none;}
-  @media (max-width:1240px){ .so-hint{display:block;} }
+  /* ============ RESPONSIF / MOBILE ============ */
+  @media (max-width:980px){
+    .so-card{width:170px;}
+    .so-card.direktur{width:210px;}
+    .so-card.subdit{width:184px;}
+    .so-card.kasi{width:168px;}
+    .so-card.staf{width:160px;}
+    .so-row{gap:12px;}
+    .so-col{gap:24px;}
+  }
 
-  /* Responsif bertahap: struktur mengecil mengikuti lebar layar/iframe */
-  @media (max-width:1100px){
-    .so-tree{min-width:980px;}
-    .so-card{width:200px;}
-    .so-card.direktur{width:260px;}
-    .so-card.subdit{width:220px;}
-    .so-card.kasi{width:192px;}
-    .so-card.staf{width:182px;}
-    .so-children{gap:18px;}
+  /* MOBILE: ubah jadi tata letak vertikal bertingkat (tanpa SVG ruwet) */
+  @media (max-width:720px){
+    .so-svg{display:none;}
+    .so-stage{max-width:520px;}
+    .so-grid{gap:0;}
+    .so-mobile-tree{display:block;}
+    .so-desktop-tree{display:none;}
   }
-  @media (max-width:880px){
-    .so-tree{min-width:820px;}
-    .so-card{width:172px;padding:18px 14px 16px;}
-    .so-card.direktur{width:230px;}
-    .so-card.subdit{width:188px;}
-    .so-card.kasi{width:166px;}
-    .so-card.staf{width:158px;}
-    .so-photo{width:64px;height:64px;font-size:20px;}
-    .so-card.direktur .so-photo{width:78px;height:78px;}
-    .so-card.staf .so-photo{width:56px;height:56px;font-size:17px;}
-    .so-name{font-size:13px;}
-    .so-role{font-size:10px;}
-    .so-children{gap:12px;}
+  @media (min-width:721px){
+    .so-mobile-tree{display:none;}
+    .so-desktop-tree{display:block;}
   }
-  @media (max-width:540px){
-    .so-wrap{padding:28px 10px 36px;}
-    .so-title{font-size:26px;}
-    .so-tree{min-width:720px;}
+
+  /* gaya pohon mobile: indentasi + garis kiri sederhana */
+  .so-m-node{position:relative;margin-bottom:14px;}
+  .so-m-level-1{margin-left:0;}
+  .so-m-level-2{margin-left:22px;padding-left:20px;border-left:3px solid var(--line);}
+  .so-m-level-3{margin-left:22px;padding-left:20px;border-left:3px solid var(--green-600);}
+  .so-m-level-4{margin-left:22px;padding-left:20px;border-left:3px dashed var(--gold-2);}
+  .so-m-node .so-card{width:100%;max-width:none;cursor:pointer;}
+  .so-m-coord{
+    margin:6px 0 16px 22px;padding:8px 14px;font-size:11px;color:var(--coord);
+    background:rgba(212,69,47,.06);border:1px dashed var(--coord);border-radius:10px;
+    line-height:1.4;
+  }
+  .so-m-section{
+    font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--green-700);margin:24px 0 12px;padding-bottom:6px;
+    border-bottom:2px solid rgba(26,122,61,.15);
   }
 </style>
 </head>
@@ -228,184 +256,190 @@
     <div class="so-divider"></div>
   </div>
 
-  <div class="so-scroll">
-    <div class="so-tree">
+  <div class="so-stage">
 
-      <div class="so-node">
-        <!-- DIREKTUR -->
-        <div class="so-card direktur" style="--d:0">
-          <div class="so-photo">
-            <span class="ini">SA</span>
-            <img src="foto/syah-aidil.jpg" alt="Syah Aidil Fitri" onerror="this.style.display='none'">
-          </div>
-          <span class="so-badge">Direktur</span>
-          <h3 class="so-name">Syah Aidil Fitri, ST., M.Si</h3>
-          <p class="so-role">Direktur Perencanaan dan Pengembangan</p>
-        </div>
+    <!-- ============ TAMPILAN DESKTOP (pohon + SVG) ============ -->
+    <div class="so-desktop-tree">
+      <div class="so-canvas" id="canvas">
+        <svg class="so-svg" id="lines" preserveAspectRatio="none"></svg>
+        <div class="so-grid">
 
-        <div class="so-children multi" style="--bus-left:25%;--bus-right:25%;">
-
-          <!-- garis koordinasi antar kasubdit -->
-          <span class="so-coord-tag">Koordinasi</span>
-          <span class="so-coord-line"></span>
-
-          <!-- SUBDIT KIRI -->
-          <div class="so-child">
-            <div class="so-card subdit" style="--d:1">
-              <div class="so-photo">
-                <span class="ini">ZI</span>
-                <img src="foto/zainardi.jpg" alt="Zainardi Ihsan" onerror="this.style.display='none'">
-              </div>
-              <span class="so-badge">Kepala Subdit</span>
-              <h3 class="so-name">Zainardi Ihsan, S.Kom</h3>
-              <p class="so-role">Perencanaan Strategis &amp; Evaluasi Kinerja</p>
+          <!-- Baris 1: Direktur -->
+          <div class="so-row">
+            <div class="so-card direktur" id="n-dir"
+                 data-ini="SA" data-photo="foto/syah-aidil.jpg"
+                 data-badge="Direktur" data-name="Syah Aidil Fitri, ST., M.Si"
+                 data-role="Direktur Perencanaan dan Pengembangan"
+                 data-unit="Memimpin seluruh Direktorat Perencanaan dan Pengembangan, membawahi 2 Subdirektorat.">
+              <div class="so-photo"><span class="ini">SA</span><img src="foto/syah-aidil.jpg" alt="Syah Aidil Fitri" onerror="this.style.display='none'"></div>
+              <span class="so-badge">Direktur</span>
+              <h3 class="so-name">Syah Aidil Fitri, ST., M.Si</h3>
+              <p class="so-role">Direktur Perencanaan dan Pengembangan</p>
+              <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
             </div>
+          </div>
 
-            <div class="so-children single">
-              <div class="so-child">
-                <div class="so-card kasi" style="--d:2">
-                  <div class="so-photo">
-                    <span class="ini">ED</span>
-                    <img src="foto/edison.jpg" alt="Edison" onerror="this.style.display='none'">
-                  </div>
-                  <span class="so-badge">Kepala Seksi</span>
-                  <h3 class="so-name">Edison, S.M</h3>
-                  <p class="so-role">Perencanaan Strategis dan Penetapan Kinerja</p>
-                </div>
-
-                <div class="so-children single">
-                  <div class="so-child">
-                    <div class="so-card staf" style="--d:3">
-                      <div class="so-photo">
-                        <span class="ini">SA</span>
-                        <img src="foto/suci-aulia.jpg" alt="Suci Aulia Antoni" onerror="this.style.display='none'">
-                      </div>
-                      <span class="so-badge">Staf</span>
-                      <h3 class="so-name">Suci Aulia Antoni, S.H</h3>
-                      <p class="so-role">Staf Seksi Perencanaan Strategis dan Penetapan Kinerja</p>
-                    </div>
-                  </div>
-                </div>
+          <!-- Baris 2: dua Kasubdit -->
+          <div class="so-row">
+            <div class="so-col">
+              <div class="so-card subdit" id="n-zi"
+                   data-ini="ZI" data-photo="foto/zainardi.jpg"
+                   data-badge="Kepala Subdit" data-name="Zainardi Ihsan, S.Kom"
+                   data-role="Kepala Subdit Perencanaan Strategis &amp; Evaluasi Kinerja"
+                   data-unit="Membawahi Seksi Perencanaan Strategis dan Penetapan Kinerja.">
+                <div class="so-photo"><span class="ini">ZI</span><img src="foto/zainardi.jpg" alt="Zainardi Ihsan" onerror="this.style.display='none'"></div>
+                <span class="so-badge">Kepala Subdit</span>
+                <h3 class="so-name">Zainardi Ihsan, S.Kom</h3>
+                <p class="so-role">Perencanaan Strategis &amp; Evaluasi Kinerja</p>
+                <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
+              </div>
+            </div>
+            <div class="so-col">
+              <div class="so-card subdit" id="n-fl"
+                   data-ini="FL" data-photo="foto/lenita.jpg"
+                   data-badge="Kepala Subdit" data-name="F. Lenita Rias, SE., MM"
+                   data-role="Kepala Subdit Perencanaan Kerja, Anggaran Tahunan, dan Pengembangan"
+                   data-unit="Membawahi 3 Seksi: Perencanaan Anggaran &amp; Kerja Tahunan, Evaluasi Anggaran, serta Pengembangan Fisik &amp; Non Fisik.">
+                <div class="so-photo"><span class="ini">FL</span><img src="foto/lenita.jpg" alt="F. Lenita Rias" onerror="this.style.display='none'"></div>
+                <span class="so-badge">Kepala Subdit</span>
+                <h3 class="so-name">F. Lenita Rias, SE., MM</h3>
+                <p class="so-role">Perencanaan Kerja, Anggaran Tahunan, dan Pengembangan</p>
+                <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
               </div>
             </div>
           </div>
 
-          <!-- SUBDIT KANAN -->
-          <div class="so-child">
-            <div class="so-card subdit" style="--d:1">
-              <div class="so-photo">
-                <span class="ini">FL</span>
-                <img src="foto/lenita.jpg" alt="F. Lenita Rias" onerror="this.style.display='none'">
+          <!-- Baris 3: Kasi -->
+          <div class="so-row">
+            <div class="so-col">
+              <div class="so-card kasi" id="n-ed"
+                   data-ini="ED" data-photo="foto/edison.jpg"
+                   data-badge="Kepala Seksi" data-name="Edison, S.M"
+                   data-role="Kepala Seksi Perencanaan Strategis dan Penetapan Kinerja"
+                   data-unit="Di bawah Subdit Perencanaan Strategis &amp; Evaluasi Kinerja. Membawahi 1 staf.">
+                <div class="so-photo"><span class="ini">ED</span><img src="foto/edison.jpg" alt="Edison" onerror="this.style.display='none'"></div>
+                <span class="so-badge">Kepala Seksi</span>
+                <h3 class="so-name">Edison, S.M</h3>
+                <p class="so-role">Perencanaan Strategis dan Penetapan Kinerja</p>
+                <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
               </div>
-              <span class="so-badge">Kepala Subdit</span>
-              <h3 class="so-name">F. Lenita Rias, SE., MM</h3>
-              <p class="so-role">Perencanaan Kerja, Anggaran Tahunan, dan Pengembangan</p>
             </div>
-
-            <div class="so-children multi" style="--bus-left:16%;--bus-right:16%;">
-
-              <!-- KASI IRFANDI -->
-              <div class="so-child">
-                <div class="so-card kasi" style="--d:2">
-                  <div class="so-photo">
-                    <span class="ini">IR</span>
-                    <img src="foto/irfandi.jpg" alt="Irfandi" onerror="this.style.display='none'">
-                  </div>
-                  <span class="so-badge">Kepala Seksi</span>
-                  <h3 class="so-name">Irfandi, A.Md</h3>
-                  <p class="so-role">Perencanaan Anggaran &amp; Kerja Tahunan</p>
-                </div>
-
-                <div class="so-children multi" style="--bus-left:25%;--bus-right:25%;">
-                  <div class="so-child">
-                    <div class="so-card staf" style="--d:3">
-                      <div class="so-photo">
-                        <span class="ini">RM</span>
-                        <img src="foto/rina-mayang.jpg" alt="Rina Mayang Sari" onerror="this.style.display='none'">
-                      </div>
-                      <span class="so-badge">Staf</span>
-                      <h3 class="so-name">Rina Mayang Sari, S.E</h3>
-                      <p class="so-role">Staf Seksi Perencanaan Anggaran &amp; Kerja Tahunan</p>
-                    </div>
-                  </div>
-                  <div class="so-child">
-                    <div class="so-card staf" style="--d:4">
-                      <div class="so-photo">
-                        <span class="ini">RI</span>
-                        <img src="foto/rismaini.jpg" alt="Rismaini" onerror="this.style.display='none'">
-                      </div>
-                      <span class="so-badge">Bendahara</span>
-                      <h3 class="so-name">Rismaini, A.Md</h3>
-                      <p class="so-role">Bendahara Pengeluaran Bidang IV</p>
-                    </div>
-                  </div>
-                </div>
+            <div class="so-col">
+              <div class="so-card kasi" id="n-ir"
+                   data-ini="IR" data-photo="foto/irfandi.jpg"
+                   data-badge="Kepala Seksi" data-name="Irfandi, A.Md"
+                   data-role="Kepala Seksi Perencanaan Anggaran &amp; Kerja Tahunan"
+                   data-unit="Di bawah Subdit Anggaran &amp; Pengembangan. Membawahi 2 staf (termasuk Bendahara).">
+                <div class="so-photo"><span class="ini">IR</span><img src="foto/irfandi.jpg" alt="Irfandi" onerror="this.style.display='none'"></div>
+                <span class="so-badge">Kepala Seksi</span>
+                <h3 class="so-name">Irfandi, A.Md</h3>
+                <p class="so-role">Perencanaan Anggaran &amp; Kerja Tahunan</p>
+                <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
               </div>
-
-              <!-- KASI AMINAH -->
-              <div class="so-child">
-                <div class="so-card kasi" style="--d:2">
-                  <div class="so-photo">
-                    <span class="ini">AE</span>
-                    <img src="foto/aminah-elvina.jpg" alt="Aminah Elvina" onerror="this.style.display='none'">
-                  </div>
-                  <span class="so-badge">Kepala Seksi</span>
-                  <h3 class="so-name">Aminah Elvina, S.Pd., M.Hum</h3>
-                  <p class="so-role">Evaluasi Anggaran</p>
-                </div>
-
-                <div class="so-children single">
-                  <div class="so-child">
-                    <div class="so-card staf" style="--d:3">
-                      <div class="so-photo">
-                        <span class="ini">MR</span>
-                        <img src="foto/mutia-rahmi.jpg" alt="Mutia Rahmi" onerror="this.style.display='none'">
-                      </div>
-                      <span class="so-badge">Staf</span>
-                      <h3 class="so-name">Mutia Rahmi, S.K.M</h3>
-                      <p class="so-role">Staf Seksi Evaluasi Anggaran</p>
-                    </div>
-                  </div>
-                </div>
+            </div>
+            <div class="so-col">
+              <div class="so-card kasi" id="n-ae"
+                   data-ini="AE" data-photo="foto/aminah-elvina.jpg"
+                   data-badge="Kepala Seksi" data-name="Aminah Elvina, S.Pd., M.Hum"
+                   data-role="Kepala Seksi Evaluasi Anggaran"
+                   data-unit="Di bawah Subdit Anggaran &amp; Pengembangan. Membawahi 1 staf.">
+                <div class="so-photo"><span class="ini">AE</span><img src="foto/aminah-elvina.jpg" alt="Aminah Elvina" onerror="this.style.display='none'"></div>
+                <span class="so-badge">Kepala Seksi</span>
+                <h3 class="so-name">Aminah Elvina, S.Pd., M.Hum</h3>
+                <p class="so-role">Evaluasi Anggaran</p>
+                <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
               </div>
-
-              <!-- KASI ERIYONTONI -->
-              <div class="so-child">
-                <div class="so-card kasi" style="--d:2">
-                  <div class="so-photo">
-                    <span class="ini">ER</span>
-                    <img src="foto/eriyontoni.jpg" alt="Eriyontoni" onerror="this.style.display='none'">
-                  </div>
-                  <span class="so-badge">Kepala Seksi</span>
-                  <h3 class="so-name">Eriyontoni, S.T</h3>
-                  <p class="so-role">Pengembangan Fisik &amp; Non Fisik</p>
-                </div>
-
-                <div class="so-children single">
-                  <div class="so-child">
-                    <div class="so-card staf" style="--d:3">
-                      <div class="so-photo">
-                        <span class="ini">MR</span>
-                        <img src="foto/mutia-rahmi.jpg" alt="Mutia Rahmi" onerror="this.style.display='none'">
-                      </div>
-                      <span class="so-badge">Staf</span>
-                      <h3 class="so-name">Mutia Rahmi, S.K.M</h3>
-                      <p class="so-role">Staf Seksi Pengembangan Fisik &amp; Non Fisik</p>
-                    </div>
-                  </div>
-                </div>
+            </div>
+            <div class="so-col">
+              <div class="so-card kasi" id="n-er"
+                   data-ini="ER" data-photo="foto/eriyontoni.jpg"
+                   data-badge="Kepala Seksi" data-name="Eriyontoni, S.T"
+                   data-role="Kepala Seksi Pengembangan Fisik &amp; Non Fisik"
+                   data-unit="Di bawah Subdit Anggaran &amp; Pengembangan. Membawahi 1 staf.">
+                <div class="so-photo"><span class="ini">ER</span><img src="foto/eriyontoni.jpg" alt="Eriyontoni" onerror="this.style.display='none'"></div>
+                <span class="so-badge">Kepala Seksi</span>
+                <h3 class="so-name">Eriyontoni, S.T</h3>
+                <p class="so-role">Pengembangan Fisik &amp; Non Fisik</p>
+                <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
               </div>
+            </div>
+          </div>
 
+          <!-- Baris 4: Staf -->
+          <div class="so-row">
+            <div class="so-col">
+              <div class="so-card staf" id="n-su"
+                   data-ini="SA" data-photo="foto/suci-aulia.jpg"
+                   data-badge="Staf" data-name="Suci Aulia Antoni, S.H"
+                   data-role="Staf Seksi Perencanaan Strategis dan Penetapan Kinerja"
+                   data-unit="Di bawah Kepala Seksi Edison, S.M.">
+                <div class="so-photo"><span class="ini">SA</span><img src="foto/suci-aulia.jpg" alt="Suci Aulia Antoni" onerror="this.style.display='none'"></div>
+                <span class="so-badge">Staf</span>
+                <h3 class="so-name">Suci Aulia Antoni, S.H</h3>
+                <p class="so-role">Staf Seksi Perencanaan Strategis dan Penetapan Kinerja</p>
+                <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
+              </div>
+            </div>
+            <div class="so-col" style="flex:2;flex-direction:row;justify-content:center;gap:20px;align-items:flex-start;">
+              <div class="so-card staf" id="n-rm"
+                   data-ini="RM" data-photo="foto/rina-mayang.jpg"
+                   data-badge="Staf" data-name="Rina Mayang Sari, S.E"
+                   data-role="Staf Seksi Perencanaan Anggaran &amp; Kerja Tahunan"
+                   data-unit="Di bawah Kepala Seksi Irfandi, A.Md.">
+                <div class="so-photo"><span class="ini">RM</span><img src="foto/rina-mayang.jpg" alt="Rina Mayang Sari" onerror="this.style.display='none'"></div>
+                <span class="so-badge">Staf</span>
+                <h3 class="so-name">Rina Mayang Sari, S.E</h3>
+                <p class="so-role">Staf Seksi Perencanaan Anggaran &amp; Kerja Tahunan</p>
+                <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
+              </div>
+              <div class="so-card staf" id="n-ri"
+                   data-ini="RI" data-photo="foto/rismaini.jpg"
+                   data-badge="Bendahara" data-name="Rismaini, A.Md"
+                   data-role="Bendahara Pengeluaran Bidang IV"
+                   data-unit="Di bawah Kepala Seksi Irfandi, A.Md.">
+                <div class="so-photo"><span class="ini">RI</span><img src="foto/rismaini.jpg" alt="Rismaini" onerror="this.style.display='none'"></div>
+                <span class="so-badge">Bendahara</span>
+                <h3 class="so-name">Rismaini, A.Md</h3>
+                <p class="so-role">Bendahara Pengeluaran Bidang IV</p>
+                <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
+              </div>
+            </div>
+            <div class="so-col">
+              <div class="so-card staf" id="n-mr1"
+                   data-ini="MR" data-photo="foto/mutia-rahmi.jpg"
+                   data-badge="Staf" data-name="Mutia Rahmi, S.K.M"
+                   data-role="Staf Seksi Evaluasi Anggaran"
+                   data-unit="Di bawah Kepala Seksi Aminah Elvina, S.Pd., M.Hum.">
+                <div class="so-photo"><span class="ini">MR</span><img src="foto/mutia-rahmi.jpg" alt="Mutia Rahmi" onerror="this.style.display='none'"></div>
+                <span class="so-badge">Staf</span>
+                <h3 class="so-name">Mutia Rahmi, S.K.M</h3>
+                <p class="so-role">Staf Seksi Evaluasi Anggaran</p>
+                <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
+              </div>
+            </div>
+            <div class="so-col">
+              <div class="so-card staf" id="n-mr2"
+                   data-ini="MR" data-photo="foto/mutia-rahmi.jpg"
+                   data-badge="Staf" data-name="Mutia Rahmi, S.K.M"
+                   data-role="Staf Seksi Pengembangan Fisik &amp; Non Fisik"
+                   data-unit="Di bawah Kepala Seksi Eriyontoni, S.T. Mutia Rahmi memegang dua jabatan staf (juga di Seksi Evaluasi Anggaran).">
+                <div class="so-photo"><span class="ini">MR</span><img src="foto/mutia-rahmi.jpg" alt="Mutia Rahmi" onerror="this.style.display='none'"></div>
+                <span class="so-badge">Staf</span>
+                <h3 class="so-name">Mutia Rahmi, S.K.M</h3>
+                <p class="so-role">Staf Seksi Pengembangan Fisik &amp; Non Fisik</p>
+                <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
+              </div>
             </div>
           </div>
 
         </div>
       </div>
-
     </div>
-  </div>
 
-  <p class="so-hint">&larr; Geser ke samping untuk melihat seluruh struktur &rarr;</p>
+    <!-- ============ TAMPILAN MOBILE (vertikal bertingkat) ============ -->
+    <div class="so-mobile-tree" id="mobileTree"></div>
+
+  </div>
 
   <div class="so-legend">
     <div class="so-legend-item"><span class="so-legend-line"></span><span>Garis Komando</span></div>
@@ -414,23 +448,181 @@
 
 </div>
 
+<!-- MODAL -->
+<div class="so-modal" id="modal">
+  <div class="so-modal-box">
+    <button class="so-modal-close" id="modalClose" aria-label="Tutup">&times;</button>
+    <div class="so-modal-photo"><span class="ini" id="mPhotoIni">--</span><img id="mPhotoImg" src="" alt="" style="display:none"></div>
+    <div class="so-modal-badge" id="mBadge">--</div>
+    <h3 class="so-modal-name" id="mName">--</h3>
+    <p class="so-modal-role" id="mRole">--</p>
+    <div class="so-modal-unit" id="mUnit">--</div>
+  </div>
+</div>
+
 <script>
-  // Kirim tinggi konten ke halaman induk (Joomla) agar iframe auto-pas
-  (function(){
-    function sendHeight(){
-      var h = document.documentElement.scrollHeight;
-      if (window.parent && window.parent !== window) {
-        window.parent.postMessage({ soHeight: h }, "*");
-      }
+(function(){
+  "use strict";
+
+  // ===== 1. Gambar garis SVG presisi (desktop) =====
+  function drawLines(){
+    var canvas=document.getElementById('canvas');
+    var svg=document.getElementById('lines');
+    if(!canvas||!svg) return;
+    if(window.innerWidth<=720){ return; } // mobile pakai tampilan lain
+
+    var cb=canvas.getBoundingClientRect();
+    svg.setAttribute('viewBox','0 0 '+cb.width+' '+cb.height);
+    svg.style.height=cb.height+'px';
+
+    function ctr(id){
+      var el=document.getElementById(id);
+      var r=el.getBoundingClientRect();
+      return {
+        x:r.left-cb.left+r.width/2,
+        top:r.top-cb.top,
+        bot:r.bottom-cb.top
+      };
     }
-    window.addEventListener('load', function(){ sendHeight(); setTimeout(sendHeight, 600); });
-    window.addEventListener('resize', sendHeight);
-    // jaga-jaga jika foto baru selesai loading setelah load
-    document.querySelectorAll('img').forEach(function(img){
-      img.addEventListener('load', sendHeight);
-      img.addEventListener('error', sendHeight);
-    });
-  })();
+    function pathV(a,b){
+      // garis vertikal siku dari bawah A ke atas B
+      var midY=(a.bot+b.top)/2;
+      return 'M'+a.x+','+a.bot+' L'+a.x+','+midY+' L'+b.x+','+midY+' L'+b.x+','+b.top;
+    }
+
+    var ids=['n-dir','n-zi','n-fl','n-ed','n-ir','n-ae','n-er','n-su','n-rm','n-ri','n-mr1','n-mr2'];
+    for(var i=0;i<ids.length;i++){ if(!document.getElementById(ids[i])) return; }
+
+    var P={};
+    ids.forEach(function(id){ P[id]=ctr(id); });
+
+    var paths=[];
+    // Direktur -> 2 Kasubdit
+    paths.push(pathV(P['n-dir'],P['n-zi']));
+    paths.push(pathV(P['n-dir'],P['n-fl']));
+    // Kasubdit kiri -> Kasi Edison
+    paths.push(pathV(P['n-zi'],P['n-ed']));
+    // Kasubdit kanan -> 3 Kasi
+    paths.push(pathV(P['n-fl'],P['n-ir']));
+    paths.push(pathV(P['n-fl'],P['n-ae']));
+    paths.push(pathV(P['n-fl'],P['n-er']));
+    // Kasi -> Staf
+    paths.push(pathV(P['n-ed'],P['n-su']));
+    paths.push(pathV(P['n-ir'],P['n-rm']));
+    paths.push(pathV(P['n-ir'],P['n-ri']));
+    paths.push(pathV(P['n-ae'],P['n-mr1']));
+    paths.push(pathV(P['n-er'],P['n-mr2']));
+
+    var html='';
+    paths.forEach(function(d){ html+='<path d="'+d+'"></path>'; });
+
+    // Garis koordinasi (putus-putus) antar 2 Kasubdit
+    var zi=P['n-zi'], fl=P['n-fl'];
+    var cy=(P['n-dir'].bot + Math.min(zi.top,fl.top))/2 + 6;
+    html+='<path class="coord" d="M'+zi.x+','+(zi.top-2)+' L'+zi.x+','+cy+' L'+fl.x+','+cy+' L'+fl.x+','+(fl.top-2)+'"></path>';
+
+    svg.innerHTML=html;
+  }
+
+  // ===== 2. Bangun tampilan mobile (vertikal bertingkat) =====
+  function buildMobile(){
+    var mt=document.getElementById('mobileTree');
+    if(!mt||mt.dataset.built) return;
+
+    function card(id){
+      var src=document.getElementById(id);
+      var c=src.cloneNode(true);
+      c.removeAttribute('id');
+      return c.outerHTML;
+    }
+
+    var html='';
+    html+='<div class="so-m-node so-m-level-1">'+card('n-dir')+'</div>';
+    html+='<div class="so-m-coord">&#8635; <b>Garis Koordinasi:</b> Kedua Kepala Subdit saling berkoordinasi (setara, bukan atasan-bawahan).</div>';
+
+    html+='<div class="so-m-section">Subdit Perencanaan Strategis &amp; Evaluasi Kinerja</div>';
+    html+='<div class="so-m-node so-m-level-2">'+card('n-zi')+
+          '<div class="so-m-node so-m-level-3" style="margin-top:14px;">'+card('n-ed')+
+          '<div class="so-m-node so-m-level-4" style="margin-top:14px;">'+card('n-su')+'</div>'+
+          '</div></div>';
+
+    html+='<div class="so-m-section">Subdit Perencanaan Kerja, Anggaran &amp; Pengembangan</div>';
+    html+='<div class="so-m-node so-m-level-2">'+card('n-fl')+
+          '<div class="so-m-node so-m-level-3" style="margin-top:14px;">'+card('n-ir')+
+            '<div class="so-m-node so-m-level-4" style="margin-top:14px;">'+card('n-rm')+'</div>'+
+            '<div class="so-m-node so-m-level-4" style="margin-top:14px;">'+card('n-ri')+'</div>'+
+          '</div>'+
+          '<div class="so-m-node so-m-level-3" style="margin-top:14px;">'+card('n-ae')+
+            '<div class="so-m-node so-m-level-4" style="margin-top:14px;">'+card('n-mr1')+'</div>'+
+          '</div>'+
+          '<div class="so-m-node so-m-level-3" style="margin-top:14px;">'+card('n-er')+
+            '<div class="so-m-node so-m-level-4" style="margin-top:14px;">'+card('n-mr2')+'</div>'+
+          '</div>'+
+          '</div>';
+
+    mt.innerHTML=html;
+    mt.dataset.built="1";
+  }
+
+  // ===== 3. Modal detail =====
+  var modal=document.getElementById('modal');
+  function openModal(el){
+    document.getElementById('mBadge').textContent=el.getAttribute('data-badge');
+    document.getElementById('mName').textContent=el.getAttribute('data-name');
+    document.getElementById('mRole').textContent=el.getAttribute('data-role');
+    document.getElementById('mUnit').innerHTML=el.getAttribute('data-unit');
+    var ini=document.getElementById('mPhotoIni');
+    var img=document.getElementById('mPhotoImg');
+    ini.textContent=el.getAttribute('data-ini');
+    var ph=el.getAttribute('data-photo');
+    img.onerror=function(){ img.style.display='none'; };
+    img.onload=function(){ img.style.display='block'; };
+    img.style.display='none';
+    img.src=ph;
+    modal.classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeModal(){
+    modal.classList.remove('open');
+    document.body.style.overflow='';
+  }
+  document.getElementById('modalClose').addEventListener('click',closeModal);
+  modal.addEventListener('click',function(e){ if(e.target===modal) closeModal(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeModal(); });
+
+  document.addEventListener('click',function(e){
+    var card=e.target.closest('.so-card');
+    if(card && card.hasAttribute('data-name')){ openModal(card); }
+  });
+
+  // ===== 4. Inisialisasi + responsif =====
+  function init(){
+    if(window.innerWidth<=720){ buildMobile(); }
+    else { drawLines(); }
+  }
+  window.addEventListener('load',function(){
+    init();
+    setTimeout(init,400);
+    setTimeout(reportHeight,600);
+  });
+  var rt;
+  window.addEventListener('resize',function(){
+    clearTimeout(rt);
+    rt=setTimeout(function(){ init(); reportHeight(); },200);
+  });
+
+  // ===== 5. Auto-tinggi untuk iframe (Joomla) =====
+  function reportHeight(){
+    var h=document.documentElement.scrollHeight;
+    if(window.parent && window.parent!==window){
+      window.parent.postMessage({soHeight:h},"*");
+    }
+  }
+  document.querySelectorAll('img').forEach(function(im){
+    im.addEventListener('load',reportHeight);
+    im.addEventListener('error',reportHeight);
+  });
+})();
 </script>
 
 </body>
