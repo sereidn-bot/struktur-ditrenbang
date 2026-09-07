@@ -57,6 +57,10 @@
     font-weight:700;color:var(--green-800);margin:0 0 8px;letter-spacing:-.02em;line-height:1.1;
   }
   .so-subtitle{font-size:14px;color:var(--muted);margin:0;font-weight:500;}
+  .so-updated{
+    font-size:11px;color:var(--gold-2);margin:6px 0 0;font-weight:700;
+    letter-spacing:.5px;
+  }
   .so-divider{
     width:60px;height:3px;margin:16px auto 0;border-radius:2px;
     background:linear-gradient(90deg,var(--gold),var(--green-600));
@@ -187,6 +191,29 @@
   }
   .so-modal-unit b{color:var(--green-800);}
 
+  .so-modal-tabs{
+    display:flex;gap:6px;margin:4px 0 14px;background:rgba(11,61,34,.06);
+    border-radius:12px;padding:4px;
+  }
+  .so-modal-tab{
+    flex:1;border:none;background:transparent;padding:8px 10px;border-radius:9px;
+    font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;
+    color:var(--muted);cursor:pointer;transition:background .2s,color .2s;
+  }
+  .so-modal-tab.active{background:#fff;color:var(--green-800);box-shadow:0 2px 6px rgba(11,61,34,.12);}
+  .so-modal-panel{text-align:left;}
+  .so-modal-history{
+    font-size:12px;color:var(--ink);line-height:1.6;
+    background:rgba(227,167,18,.08);border-left:3px solid var(--gold-2);
+    padding:10px 14px;border-radius:12px;
+  }
+  .so-modal-history ul{margin:0;padding-left:18px;}
+  .so-modal-history li{margin-bottom:6px;}
+  .so-modal-history li:last-child{margin-bottom:0;}
+  .so-modal-attribution{
+    font-size:10px;color:var(--muted);margin:8px 0 0;text-align:right;font-style:italic;
+  }
+
   .so-legend{
     display:flex;justify-content:center;gap:24px;flex-wrap:wrap;
     margin-top:36px;padding-top:22px;font-size:12px;color:var(--muted);
@@ -253,6 +280,7 @@
     <span class="so-eyebrow">Universitas Andalas</span>
     <h1 class="so-title">Struktur Organisasi</h1>
     <p class="so-subtitle">Direktorat Perencanaan dan Pengembangan</p>
+    <p class="so-updated">Diperbarui per Agustus 2026</p>
     <div class="so-divider"></div>
   </div>
 
@@ -316,7 +344,8 @@
                    data-ini="-" data-photo="-"
                    data-badge="Kepala Seksi" data-name="-"
                    data-role="Kepala Seksi Perencanaan Strategis dan Penetapan Kinerja"
-                   data-unit="Posisi sedang kosong. Pejabat sebelumnya, Edison, S.M, telah dilantik menjadi Kepala Kantor Fakultas Teknologi Pertanian (FATETA). Posisi ini membawahi 1 staf (Suci Aulia Antoni, S.H).">
+                   data-unit="Posisi sedang kosong. Pejabat sebelumnya, Edison, S.M, telah dilantik menjadi Kepala Kantor Fakultas Teknologi Pertanian (FATETA). Posisi ini membawahi 1 staf (Suci Aulia Antoni, S.H)."
+                   data-history="&lt;ul&gt;&lt;li&gt;&lt;b&gt;Edison, S.M&lt;/b&gt; &mdash; menjabat hingga Juli 2026, sebelum dilantik menjadi Kepala Kantor Fakultas Teknologi Pertanian (FATETA).&lt;/li&gt;&lt;/ul&gt;">
                 <div class="so-photo" style="opacity:.5;"><span class="ini">—</span></div>
                 <span class="so-badge">Kepala Seksi</span>
                 <h3 class="so-name">Belum Terisi</h3>
@@ -458,7 +487,19 @@
     <div class="so-modal-badge" id="mBadge">--</div>
     <h3 class="so-modal-name" id="mName">--</h3>
     <p class="so-modal-role" id="mRole">--</p>
-    <div class="so-modal-unit" id="mUnit">--</div>
+
+    <div class="so-modal-tabs">
+      <button class="so-modal-tab active" id="tabDetail" data-tab="detail">Detail</button>
+      <button class="so-modal-tab" id="tabHistory" data-tab="history">Riwayat</button>
+    </div>
+
+    <div class="so-modal-panel" id="panelDetail">
+      <div class="so-modal-unit" id="mUnit">--</div>
+    </div>
+    <div class="so-modal-panel" id="panelHistory" style="display:none;">
+      <div class="so-modal-history" id="mHistory">Belum ada riwayat perubahan pada posisi ini.</div>
+      <p class="so-modal-attribution">Diperbarui oleh: Mutia Rahmi, Agustus 2026</p>
+    </div>
   </div>
 </div>
 
@@ -569,11 +610,23 @@
 
   // ===== 3. Modal detail =====
   var modal=document.getElementById('modal');
+  function switchTab(tab){
+    var isDetail = tab==='detail';
+    document.getElementById('tabDetail').classList.toggle('active', isDetail);
+    document.getElementById('tabHistory').classList.toggle('active', !isDetail);
+    document.getElementById('panelDetail').style.display = isDetail ? 'block' : 'none';
+    document.getElementById('panelHistory').style.display = isDetail ? 'none' : 'block';
+  }
   function openModal(el){
     document.getElementById('mBadge').textContent=el.getAttribute('data-badge');
     document.getElementById('mName').textContent=el.getAttribute('data-name');
     document.getElementById('mRole').textContent=el.getAttribute('data-role');
     document.getElementById('mUnit').innerHTML=el.getAttribute('data-unit');
+    var hist=el.getAttribute('data-history');
+    document.getElementById('mHistory').innerHTML = hist && hist.trim()
+      ? hist
+      : 'Belum ada riwayat perubahan pada posisi ini.';
+    switchTab('detail');
     var ini=document.getElementById('mPhotoIni');
     var img=document.getElementById('mPhotoImg');
     ini.textContent=el.getAttribute('data-ini');
@@ -590,6 +643,8 @@
     document.body.style.overflow='';
   }
   document.getElementById('modalClose').addEventListener('click',closeModal);
+  document.getElementById('tabDetail').addEventListener('click',function(){ switchTab('detail'); });
+  document.getElementById('tabHistory').addEventListener('click',function(){ switchTab('history'); });
   modal.addEventListener('click',function(e){ if(e.target===modal) closeModal(); });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeModal(); });
 
