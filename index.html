@@ -222,6 +222,27 @@
   .so-legend-item{display:flex;align-items:center;gap:8px;}
   .so-legend-line{display:inline-block;width:32px;height:3px;background:var(--line);border-radius:2px;}
   .so-legend-line.coord{background:transparent;height:0;border-top:3px dashed var(--coord);}
+  .so-view-tabs{
+    display:flex;justify-content:center;gap:8px;margin-bottom:24px;position:relative;z-index:2;
+  }
+  .so-view-tab{
+    font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:700;
+    color:var(--muted);background:#fff;border:1px solid rgba(11,61,34,.12);
+    padding:8px 18px;border-radius:20px;cursor:pointer;transition:background .2s,color .2s,border-color .2s;
+  }
+  .so-view-tab:hover{border-color:var(--green-800);color:var(--green-800);}
+  .so-view-tab.active{background:var(--green-800);color:#fff;border-color:var(--green-800);}
+  .so-view{display:none;}
+  .so-view.active{display:block;}
+  .so-prev-caption{
+    max-width:560px;margin:0 auto 28px;text-align:center;
+  }
+  .so-prev-badge{
+    display:inline-block;font-size:10.5px;font-weight:800;text-transform:uppercase;
+    letter-spacing:.8px;color:var(--gold-2);background:rgba(227,167,18,.14);
+    padding:5px 14px;border-radius:20px;margin-bottom:10px;
+  }
+  .so-prev-caption p{font-size:12.5px;color:var(--muted);line-height:1.6;margin:0;}
 
   /* ============ RESPONSIF / MOBILE ============ */
   @media (max-width:980px){
@@ -284,6 +305,12 @@
     <div class="so-divider"></div>
   </div>
 
+  <div class="so-view-tabs">
+    <button class="so-view-tab active" id="soTabCurrent" onclick="soSwitchView('current')">Struktur Saat Ini</button>
+    <button class="so-view-tab" id="soTabPrevious" onclick="soSwitchView('previous')">Struktur Sebelumnya</button>
+  </div>
+
+  <div class="so-view active" id="soViewCurrent">
   <div class="so-stage">
 
     <!-- ============ TAMPILAN DESKTOP (pohon + SVG) ============ -->
@@ -476,6 +503,15 @@
     <div class="so-legend-item"><span class="so-legend-line"></span><span>Garis Komando</span></div>
     <div class="so-legend-item"><span class="so-legend-line coord"></span><span>Garis Koordinasi</span></div>
   </div>
+  </div>
+
+  <div class="so-view" id="soViewPrevious">
+    <div class="so-prev-caption">
+      <span class="so-prev-badge">Berlaku s.d. Juli 2026</span>
+      <p>Struktur sebelum Edison, S.M dilantik menjadi Kepala Kantor Fakultas Teknologi Pertanian (FATETA). Posisi Kepala Seksi Perencanaan Strategis &amp; Penetapan Kinerja saat itu masih diisi olehnya.</p>
+    </div>
+    <div class="so-mobile-tree" id="soPrevTree" style="display:block; max-width:640px; margin:0 auto;"></div>
+  </div>
 
 </div>
 
@@ -641,6 +677,76 @@
   function closeModal(){
     modal.classList.remove('open');
     document.body.style.overflow='';
+  }
+  function buildPrevious(){
+    var pv=document.getElementById('soPrevTree');
+    if(!pv||pv.dataset.built) return;
+
+    function card(id, overrides){
+      var src=document.getElementById(id);
+      var c=src.cloneNode(true);
+      c.removeAttribute('id');
+      if(overrides){
+        if(overrides.name){
+          c.setAttribute('data-name', overrides.name);
+          var nameEl=c.querySelector('.so-name'); if(nameEl) nameEl.textContent=overrides.name;
+        }
+        if(overrides.ini){
+          c.setAttribute('data-ini', overrides.ini);
+          var iniEl=c.querySelector('.ini'); if(iniEl) iniEl.textContent=overrides.ini;
+        }
+        if(overrides.photo){
+          c.setAttribute('data-photo', overrides.photo);
+          var img=c.querySelector('img');
+          if(img){ img.src=overrides.photo; img.alt=overrides.name||img.alt; img.style.display=''; }
+        }
+        if(overrides.unit) c.setAttribute('data-unit', overrides.unit);
+        var photoBox=c.querySelector('.so-photo');
+        if(photoBox) photoBox.style.opacity='';
+      }
+      return c.outerHTML;
+    }
+
+    var edisonOverride={
+      name:'Edison, S.M', ini:'ED', photo:'foto/edison.jpg',
+      unit:'Membawahi 1 staf (Suci Aulia Antoni, S.H).'
+    };
+
+    var html='';
+    html+='<div class="so-m-node so-m-level-1">'+card('n-dir')+'</div>';
+    html+='<div class="so-m-coord">&#8635; <b>Garis Koordinasi:</b> Kedua Kepala Subdit saling berkoordinasi (setara, bukan atasan-bawahan).</div>';
+
+    html+='<div class="so-m-section">Subdit Perencanaan Strategis &amp; Evaluasi Kinerja</div>';
+    html+='<div class="so-m-node so-m-level-2">'+card('n-zi')+
+          '<div class="so-m-node so-m-level-3" style="margin-top:14px;">'+card('n-ed', edisonOverride)+
+          '<div class="so-m-node so-m-level-4" style="margin-top:14px;">'+card('n-su')+'</div>'+
+          '</div>'+
+          '<div class="so-m-node so-m-level-3" style="margin-top:14px;">'+card('n-me')+'</div>'+
+          '</div>';
+
+    html+='<div class="so-m-section">Subdit Perencanaan Kerja, Anggaran &amp; Pengembangan</div>';
+    html+='<div class="so-m-node so-m-level-2">'+card('n-fl')+
+          '<div class="so-m-node so-m-level-3" style="margin-top:14px;">'+card('n-ir')+
+            '<div class="so-m-node so-m-level-4" style="margin-top:14px;">'+card('n-rm')+'</div>'+
+          '</div>'+
+          '<div class="so-m-node so-m-level-3" style="margin-top:14px;">'+card('n-ae')+
+            '<div class="so-m-node so-m-level-4" style="margin-top:14px;">'+card('n-ri')+'</div>'+
+          '</div>'+
+          '<div class="so-m-node so-m-level-3" style="margin-top:14px;">'+card('n-er')+
+            '<div class="so-m-node so-m-level-4" style="margin-top:14px;">'+card('n-mr2')+'</div>'+
+          '</div>'+
+          '</div>';
+
+    pv.innerHTML=html;
+    pv.dataset.built="1";
+  }
+
+  function soSwitchView(view){
+    document.getElementById('soTabCurrent').classList.toggle('active', view === 'current');
+    document.getElementById('soTabPrevious').classList.toggle('active', view === 'previous');
+    document.getElementById('soViewCurrent').classList.toggle('active', view === 'current');
+    document.getElementById('soViewPrevious').classList.toggle('active', view === 'previous');
+    if(view === 'previous') buildPrevious();
   }
   document.getElementById('modalClose').addEventListener('click',closeModal);
   document.getElementById('tabDetail').addEventListener('click',function(){ switchTab('detail'); });
