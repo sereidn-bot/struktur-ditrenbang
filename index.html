@@ -68,6 +68,8 @@
 
   /* ====== CHART AREA: SVG garis + kartu di atasnya ====== */
   .so-stage{position:relative;z-index:2;max-width:1240px;margin:0 auto;}
+  .so-hint{display:none;}
+  .so-pan{position:relative;}
   .so-canvas{position:relative;width:100%;}
   .so-svg{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:visible;}
   .so-svg path,.so-svg line{fill:none;stroke:var(--line);stroke-width:2.5;stroke-linecap:round;}
@@ -234,35 +236,24 @@
     .so-col{gap:24px;}
   }
 
-  /* MOBILE: ubah jadi tata letak vertikal bertingkat (tanpa SVG ruwet) */
+  /* MOBILE: bagan tetap utuh, dibuka di area yang bisa digeser ke segala arah */
   @media (max-width:720px){
-    .so-svg{display:none;}
-    .so-stage{max-width:520px;}
-    .so-grid{gap:0;}
-    .so-mobile-tree{display:block;}
-    .so-desktop-tree{display:none;}
-  }
-  @media (min-width:721px){
-    .so-mobile-tree{display:none;}
-    .so-desktop-tree{display:block;}
-  }
-
-  /* gaya pohon mobile: indentasi + garis kiri sederhana */
-  .so-m-node{position:relative;margin-bottom:14px;}
-  .so-m-level-1{margin-left:0;}
-  .so-m-level-2{margin-left:22px;padding-left:20px;border-left:3px solid var(--line);}
-  .so-m-level-3{margin-left:22px;padding-left:20px;border-left:3px solid var(--green-600);}
-  .so-m-level-4{margin-left:22px;padding-left:20px;border-left:3px dashed var(--gold-2);}
-  .so-m-node .so-card{width:100%;max-width:none;cursor:pointer;}
-  .so-m-coord{
-    margin:6px 0 16px 22px;padding:8px 14px;font-size:11px;color:var(--coord);
-    background:rgba(212,69,47,.06);border:1px dashed var(--coord);border-radius:10px;
-    line-height:1.4;
-  }
-  .so-m-section{
-    font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
-    color:var(--green-700);margin:24px 0 12px;padding-bottom:6px;
-    border-bottom:2px solid rgba(26,122,61,.15);
+    .so-wrap{padding:36px 0 44px;}
+    .so-header{padding:0 16px;}
+    .so-stage{max-width:none;}
+    .so-hint{
+      display:block;text-align:center;font-size:11.5px;font-weight:600;
+      color:var(--green-700);margin:0 16px 10px;
+    }
+    .so-pan{
+      height:540px;margin:0 12px;overflow:auto;
+      -webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+      touch-action:pan-x pan-y pinch-zoom;
+      border:1px solid rgba(26,122,61,.18);border-radius:16px;
+      background:rgba(255,255,255,.55);
+    }
+    .so-canvas{width:1180px;padding:24px 24px 32px;}
+    .so-legend{margin:28px 16px 0;}
   }
 </style>
 </head>
@@ -280,14 +271,15 @@
     <span class="so-eyebrow">Universitas Andalas</span>
     <h1 class="so-title">Struktur Organisasi</h1>
     <p class="so-subtitle">Direktorat Perencanaan dan Pengembangan</p>
-    <p class="so-updated">Diperbarui per Agustus 2026</p>
+    <p class="so-updated">Diperbarui per November 2026</p>
     <div class="so-divider"></div>
   </div>
 
   <div class="so-stage">
 
-    <!-- ============ TAMPILAN DESKTOP (pohon + SVG) ============ -->
-    <div class="so-desktop-tree">
+    <p class="so-hint">&#8596; &#8597; Geser ke segala arah untuk melihat seluruh bagan</p>
+
+    <div class="so-pan" id="pan">
       <div class="so-canvas" id="canvas">
         <svg class="so-svg" id="lines" preserveAspectRatio="none"></svg>
         <div class="so-grid">
@@ -341,14 +333,14 @@
           <div class="so-row">
             <div class="so-col">
               <div class="so-card kasi" id="n-ed"
-                   data-ini="-" data-photo="-"
-                   data-badge="Kepala Seksi" data-name="-"
+                   data-ini="ER" data-photo="foto/eriyontoni.jpg"
+                   data-badge="Kepala Seksi" data-name="Eriyontoni, S.T"
                    data-role="Kepala Seksi Perencanaan Strategis dan Penetapan Kinerja"
-                   data-unit="Posisi sedang kosong. Pejabat sebelumnya, Edison, S.M, telah dilantik menjadi Kepala Kantor Fakultas Teknologi Pertanian (FATETA). Posisi ini membawahi 1 staf (Suci Aulia Antoni, S.H)."
-                   data-history="&lt;ul&gt;&lt;li&gt;&lt;b&gt;Edison, S.M&lt;/b&gt; &mdash; menjabat sebagai Kepala Seksi Perencanaan Strategis dan Penetapan Kinerja sejak 8 Mei 2024 hingga Juli 2026.&lt;/li&gt;&lt;/ul&gt;">
-                <div class="so-photo" style="opacity:.5;"><span class="ini">—</span></div>
+                   data-unit="Di bawah Subdit Perencanaan Strategis &amp; Evaluasi Kinerja. Membawahi 1 staf (Suci Aulia Antoni, S.H)."
+                   data-history="&lt;ul&gt;&lt;li&gt;&lt;b&gt;Eriyontoni, S.T&lt;/b&gt; &mdash; dilantik sebagai Kepala Seksi Perencanaan Strategis dan Penetapan Kinerja pada 30 Oktober 2026.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Edison, S.M&lt;/b&gt; &mdash; menjabat sebagai Kepala Seksi Perencanaan Strategis dan Penetapan Kinerja sejak 8 Mei 2024 hingga Juli 2026.&lt;/li&gt;&lt;/ul&gt;">
+                <div class="so-photo"><span class="ini">ER</span><img src="foto/eriyontoni.jpg" alt="Eriyontoni" onerror="this.style.display='none'"></div>
                 <span class="so-badge">Kepala Seksi</span>
-                <h3 class="so-name">Belum Terisi</h3>
+                <h3 class="so-name">Eriyontoni, S.T</h3>
                 <p class="so-role">Perencanaan Strategis dan Penetapan Kinerja</p>
                 <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
               </div>
@@ -368,39 +360,42 @@
             </div>
             <div class="so-col">
               <div class="so-card kasi" id="n-ir"
-                   data-ini="IR" data-photo="foto/irfandi.jpg"
-                   data-badge="Kepala Seksi" data-name="Irfandi, A.Md"
+                   data-ini="AE" data-photo="foto/aminah-elvina.jpg"
+                   data-badge="Kepala Seksi" data-name="Aminah Elvina, S.Pd., M.Hum"
                    data-role="Kepala Seksi Perencanaan Anggaran &amp; Kerja Tahunan"
-                   data-unit="Di bawah Subdit Anggaran &amp; Pengembangan. Membawahi 1 staf.">
-                <div class="so-photo"><span class="ini">IR</span><img src="foto/irfandi.jpg" alt="Irfandi" onerror="this.style.display='none'"></div>
+                   data-unit="Di bawah Subdit Anggaran &amp; Pengembangan."
+                   data-history="&lt;ul&gt;&lt;li&gt;&lt;b&gt;Aminah Elvina, S.Pd., M.Hum&lt;/b&gt; &mdash; dilantik sebagai Kepala Seksi Perencanaan Anggaran &amp;amp; Kerja Tahunan pada 30 Oktober 2026.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Irfandi, A.Md&lt;/b&gt; &mdash; menjabat sebagai Kepala Seksi Perencanaan Anggaran &amp;amp; Kerja Tahunan sebelum pelantikan 30 Oktober 2026.&lt;/li&gt;&lt;/ul&gt;">
+                <div class="so-photo"><span class="ini">AE</span><img src="foto/aminah-elvina.jpg" alt="Aminah Elvina" onerror="this.style.display='none'"></div>
                 <span class="so-badge">Kepala Seksi</span>
-                <h3 class="so-name">Irfandi, A.Md</h3>
+                <h3 class="so-name">Aminah Elvina, S.Pd., M.Hum</h3>
                 <p class="so-role">Perencanaan Anggaran &amp; Kerja Tahunan</p>
                 <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
               </div>
             </div>
             <div class="so-col">
               <div class="so-card kasi" id="n-ae"
-                   data-ini="AE" data-photo="foto/aminah-elvina.jpg"
-                   data-badge="Kepala Seksi" data-name="Aminah Elvina, S.Pd., M.Hum"
+                   data-ini="RM" data-photo="foto/rina-mayang.jpg"
+                   data-badge="Kepala Seksi" data-name="Rina Mayang Sari, S.E"
                    data-role="Kepala Seksi Evaluasi Anggaran"
-                   data-unit="Di bawah Subdit Anggaran &amp; Pengembangan. Membawahi 1 staf (Bendahara).">
-                <div class="so-photo"><span class="ini">AE</span><img src="foto/aminah-elvina.jpg" alt="Aminah Elvina" onerror="this.style.display='none'"></div>
+                   data-unit="Di bawah Subdit Anggaran &amp; Pengembangan. Membawahi 1 staf (Bendahara)."
+                   data-history="&lt;ul&gt;&lt;li&gt;&lt;b&gt;Rina Mayang Sari, S.E&lt;/b&gt; &mdash; dilantik sebagai Kepala Seksi Evaluasi Anggaran pada 30 Oktober 2026.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Aminah Elvina, S.Pd., M.Hum&lt;/b&gt; &mdash; menjabat sebagai Kepala Seksi Evaluasi Anggaran sebelum pelantikan 30 Oktober 2026.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Rina Mayang Sari, S.E&lt;/b&gt; &mdash; sebelumnya Staf Seksi Perencanaan Anggaran &amp;amp; Kerja Tahunan (di bawah Kepala Seksi Irfandi, A.Md).&lt;/li&gt;&lt;/ul&gt;">
+                <div class="so-photo"><span class="ini">RM</span><img src="foto/rina-mayang.jpg" alt="Rina Mayang Sari" onerror="this.style.display='none'"></div>
                 <span class="so-badge">Kepala Seksi</span>
-                <h3 class="so-name">Aminah Elvina, S.Pd., M.Hum</h3>
+                <h3 class="so-name">Rina Mayang Sari, S.E</h3>
                 <p class="so-role">Evaluasi Anggaran</p>
                 <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
               </div>
             </div>
             <div class="so-col">
               <div class="so-card kasi" id="n-er"
-                   data-ini="ER" data-photo="foto/eriyontoni.jpg"
-                   data-badge="Kepala Seksi" data-name="Eriyontoni, S.T"
+                   data-ini="IR" data-photo="foto/irfandi.jpg"
+                   data-badge="Kepala Seksi" data-name="Irfandi, A.Md"
                    data-role="Kepala Seksi Pengembangan Fisik &amp; Non Fisik"
-                   data-unit="Di bawah Subdit Anggaran &amp; Pengembangan. Membawahi 1 staf.">
-                <div class="so-photo"><span class="ini">ER</span><img src="foto/eriyontoni.jpg" alt="Eriyontoni" onerror="this.style.display='none'"></div>
+                   data-unit="Di bawah Subdit Anggaran &amp; Pengembangan. Membawahi 1 staf."
+                   data-history="&lt;ul&gt;&lt;li&gt;&lt;b&gt;Irfandi, A.Md&lt;/b&gt; &mdash; dilantik sebagai Kepala Seksi Pengembangan Fisik &amp;amp; Non Fisik pada 30 Oktober 2026.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Eriyontoni, S.T&lt;/b&gt; &mdash; menjabat sebagai Kepala Seksi Pengembangan Fisik &amp;amp; Non Fisik sebelum pelantikan 30 Oktober 2026.&lt;/li&gt;&lt;/ul&gt;">
+                <div class="so-photo"><span class="ini">IR</span><img src="foto/irfandi.jpg" alt="Irfandi" onerror="this.style.display='none'"></div>
                 <span class="so-badge">Kepala Seksi</span>
-                <h3 class="so-name">Eriyontoni, S.T</h3>
+                <h3 class="so-name">Irfandi, A.Md</h3>
                 <p class="so-role">Pengembangan Fisik &amp; Non Fisik</p>
                 <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
               </div>
@@ -414,7 +409,7 @@
                    data-ini="SA" data-photo="foto/suci-aulia.jpg"
                    data-badge="Staf" data-name="Suci Aulia Antoni, S.H"
                    data-role="Staf Seksi Perencanaan Strategis dan Penetapan Kinerja"
-                   data-unit="Posisi Kepala Seksi sedang kosong.">
+                   data-unit="Di bawah Kepala Seksi Eriyontoni, S.T.">
                 <div class="so-photo"><span class="ini">SA</span><img src="foto/suci-aulia.jpg" alt="Suci Aulia Antoni" onerror="this.style.display='none'"></div>
                 <span class="so-badge">Staf</span>
                 <h3 class="so-name">Suci Aulia Antoni, S.H</h3>
@@ -423,24 +418,11 @@
               </div>
             </div>
             <div class="so-col">
-              <div class="so-card staf" id="n-rm"
-                   data-ini="RM" data-photo="foto/rina-mayang.jpg"
-                   data-badge="Staf" data-name="Rina Mayang Sari, S.E"
-                   data-role="Staf Seksi Perencanaan Anggaran &amp; Kerja Tahunan"
-                   data-unit="Di bawah Kepala Seksi Irfandi, A.Md.">
-                <div class="so-photo"><span class="ini">RM</span><img src="foto/rina-mayang.jpg" alt="Rina Mayang Sari" onerror="this.style.display='none'"></div>
-                <span class="so-badge">Staf</span>
-                <h3 class="so-name">Rina Mayang Sari, S.E</h3>
-                <p class="so-role">Staf Seksi Perencanaan Anggaran &amp; Kerja Tahunan</p>
-                <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
-              </div>
-            </div>
-            <div class="so-col">
               <div class="so-card staf" id="n-ri"
                    data-ini="RI" data-photo="foto/rismaini.jpg"
                    data-badge="Bendahara" data-name="Rismaini, A.Md"
                    data-role="Bendahara Pengeluaran Bidang IV"
-                   data-unit="Di bawah Kepala Seksi Aminah Elvina, S.Pd., M.Hum.">
+                   data-unit="Di bawah Kepala Seksi Rina Mayang Sari, S.E.">
                 <div class="so-photo"><span class="ini">RI</span><img src="foto/rismaini.jpg" alt="Rismaini" onerror="this.style.display='none'"></div>
                 <span class="so-badge">Bendahara</span>
                 <h3 class="so-name">Rismaini, A.Md</h3>
@@ -453,7 +435,7 @@
                    data-ini="MR" data-photo="foto/mutia-rahmi.jpg"
                    data-badge="Staf" data-name="Mutia Rahmi, S.K.M"
                    data-role="Staf Seksi Pengembangan Fisik &amp; Non Fisik dan Pengelola Web"
-                   data-unit="Di bawah Kepala Seksi Eriyontoni, S.T.">
+                   data-unit="Di bawah Kepala Seksi Irfandi, A.Md.">
                 <div class="so-photo"><span class="ini">MR</span><img src="foto/mutia-rahmi.jpg" alt="Mutia Rahmi" onerror="this.style.display='none'"></div>
                 <span class="so-badge">Staf</span>
                 <h3 class="so-name">Mutia Rahmi, S.K.M</h3>
@@ -466,9 +448,6 @@
         </div>
       </div>
     </div>
-
-    <!-- ============ TAMPILAN MOBILE (vertikal bertingkat) ============ -->
-    <div class="so-mobile-tree" id="mobileTree"></div>
 
   </div>
 
@@ -498,7 +477,7 @@
     </div>
     <div class="so-modal-panel" id="panelHistory" style="display:none;">
       <div class="so-modal-history" id="mHistory">Belum ada riwayat perubahan pada posisi ini.</div>
-      <p class="so-modal-attribution">Diperbarui oleh: Mutia Rahmi, Agustus 2026</p>
+      <p class="so-modal-attribution">Diperbarui oleh: Mutia Rahmi, November 2026</p>
     </div>
   </div>
 </div>
@@ -507,12 +486,11 @@
 (function(){
   "use strict";
 
-  // ===== 1. Gambar garis SVG presisi (desktop) =====
+  // ===== 1. Gambar garis SVG presisi =====
   function drawLines(){
     var canvas=document.getElementById('canvas');
     var svg=document.getElementById('lines');
     if(!canvas||!svg) return;
-    if(window.innerWidth<=720){ return; } // mobile pakai tampilan lain
 
     var cb=canvas.getBoundingClientRect();
     svg.setAttribute('viewBox','0 0 '+cb.width+' '+cb.height);
@@ -533,7 +511,7 @@
       return 'M'+a.x+','+a.bot+' L'+a.x+','+midY+' L'+b.x+','+midY+' L'+b.x+','+b.top;
     }
 
-    var ids=['n-dir','n-zi','n-fl','n-ed','n-me','n-ir','n-ae','n-er','n-su','n-rm','n-ri','n-mr2'];
+    var ids=['n-dir','n-zi','n-fl','n-ed','n-me','n-ir','n-ae','n-er','n-su','n-ri','n-mr2'];
     for(var i=0;i<ids.length;i++){ if(!document.getElementById(ids[i])) return; }
 
     var P={};
@@ -543,7 +521,7 @@
     // Direktur -> 2 Kasubdit
     paths.push(pathV(P['n-dir'],P['n-zi']));
     paths.push(pathV(P['n-dir'],P['n-fl']));
-    // Kasubdit kiri -> 2 Kasi (satu kosong, satu belum ada Kasi)
+    // Kasubdit kiri -> 2 Kasi
     paths.push(pathV(P['n-zi'],P['n-ed']));
     paths.push(pathV(P['n-zi'],P['n-me']));
     // Kasubdit kanan -> 3 Kasi
@@ -552,7 +530,6 @@
     paths.push(pathV(P['n-fl'],P['n-er']));
     // Kasi -> Staf
     paths.push(pathV(P['n-ed'],P['n-su']));
-    paths.push(pathV(P['n-ir'],P['n-rm']));
     paths.push(pathV(P['n-ae'],P['n-ri']));
     paths.push(pathV(P['n-er'],P['n-mr2']));
 
@@ -567,45 +544,13 @@
     svg.innerHTML=html;
   }
 
-  // ===== 2. Bangun tampilan mobile (vertikal bertingkat) =====
-  function buildMobile(){
-    var mt=document.getElementById('mobileTree');
-    if(!mt||mt.dataset.built) return;
-
-    function card(id){
-      var src=document.getElementById(id);
-      var c=src.cloneNode(true);
-      c.removeAttribute('id');
-      return c.outerHTML;
-    }
-
-    var html='';
-    html+='<div class="so-m-node so-m-level-1">'+card('n-dir')+'</div>';
-    html+='<div class="so-m-coord">&#8635; <b>Garis Koordinasi:</b> Kedua Kepala Subdit saling berkoordinasi (setara, bukan atasan-bawahan).</div>';
-
-    html+='<div class="so-m-section">Subdit Perencanaan Strategis &amp; Evaluasi Kinerja</div>';
-    html+='<div class="so-m-node so-m-level-2">'+card('n-zi')+
-          '<div class="so-m-node so-m-level-3" style="margin-top:14px;">'+card('n-ed')+
-          '<div class="so-m-node so-m-level-4" style="margin-top:14px;">'+card('n-su')+'</div>'+
-          '</div>'+
-          '<div class="so-m-node so-m-level-3" style="margin-top:14px;">'+card('n-me')+'</div>'+
-          '</div>';
-
-    html+='<div class="so-m-section">Subdit Perencanaan Kerja, Anggaran &amp; Pengembangan</div>';
-    html+='<div class="so-m-node so-m-level-2">'+card('n-fl')+
-          '<div class="so-m-node so-m-level-3" style="margin-top:14px;">'+card('n-ir')+
-            '<div class="so-m-node so-m-level-4" style="margin-top:14px;">'+card('n-rm')+'</div>'+
-          '</div>'+
-          '<div class="so-m-node so-m-level-3" style="margin-top:14px;">'+card('n-ae')+
-            '<div class="so-m-node so-m-level-4" style="margin-top:14px;">'+card('n-ri')+'</div>'+
-          '</div>'+
-          '<div class="so-m-node so-m-level-3" style="margin-top:14px;">'+card('n-er')+
-            '<div class="so-m-node so-m-level-4" style="margin-top:14px;">'+card('n-mr2')+'</div>'+
-          '</div>'+
-          '</div>';
-
-    mt.innerHTML=html;
-    mt.dataset.built="1";
+  // ===== 2. Di HP: mulai dari posisi tengah bagan =====
+  var centered=false;
+  function centerPan(){
+    var pan=document.getElementById('pan');
+    if(!pan||centered||window.innerWidth>720) return;
+    pan.scrollLeft=Math.max(0,(pan.scrollWidth-pan.clientWidth)/2);
+    centered=true;
   }
 
   // ===== 3. Modal detail =====
@@ -655,8 +600,8 @@
 
   // ===== 4. Inisialisasi + responsif =====
   function init(){
-    if(window.innerWidth<=720){ buildMobile(); }
-    else { drawLines(); }
+    drawLines();
+    centerPan();
   }
   window.addEventListener('load',function(){
     init();
@@ -666,7 +611,7 @@
   var rt;
   window.addEventListener('resize',function(){
     clearTimeout(rt);
-    rt=setTimeout(function(){ init(); reportHeight(); },200);
+    rt=setTimeout(function(){ drawLines(); reportHeight(); },200);
   });
 
   // ===== 5. Auto-tinggi untuk iframe (Joomla) =====
