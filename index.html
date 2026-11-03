@@ -363,7 +363,7 @@
                    data-ini="AE" data-photo="foto/aminah-elvina.jpg"
                    data-badge="Kepala Seksi" data-name="Aminah Elvina, S.Pd., M.Hum"
                    data-role="Kepala Seksi Perencanaan Anggaran &amp; Kerja Tahunan"
-                   data-unit="Di bawah Subdit Anggaran &amp; Pengembangan."
+                   data-unit="Di bawah Subdit Anggaran &amp; Pengembangan. Membawahi 1 staf (Nola Zuhana, M.Kom)."
                    data-history="&lt;ul&gt;&lt;li&gt;&lt;b&gt;Aminah Elvina, S.Pd., M.Hum&lt;/b&gt; &mdash; dilantik sebagai Kepala Seksi Perencanaan Anggaran &amp;amp; Kerja Tahunan pada 30 Oktober 2026.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Irfandi, A.Md&lt;/b&gt; &mdash; menjabat sebagai Kepala Seksi Perencanaan Anggaran &amp;amp; Kerja Tahunan sebelum pelantikan 30 Oktober 2026.&lt;/li&gt;&lt;/ul&gt;">
                 <div class="so-photo"><span class="ini">AE</span><img src="foto/aminah-elvina.jpg" alt="Aminah Elvina" onerror="this.style.display='none'"></div>
                 <span class="so-badge">Kepala Seksi</span>
@@ -414,6 +414,20 @@
                 <span class="so-badge">Staf</span>
                 <h3 class="so-name">Suci Aulia Antoni, S.H</h3>
                 <p class="so-role">Staf Seksi Perencanaan Strategis dan Penetapan Kinerja</p>
+                <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
+              </div>
+            </div>
+            <div class="so-col">
+              <div class="so-card staf" id="n-nz"
+                   data-ini="NZ" data-photo="foto/nola-zuhana.jpg"
+                   data-badge="Staf" data-name="Nola Zuhana, M.Kom"
+                   data-role="Staf Seksi Perencanaan Anggaran &amp; Kerja Tahunan"
+                   data-unit="Di bawah Kepala Seksi Aminah Elvina, S.Pd., M.Hum."
+                   data-history="&lt;ul&gt;&lt;li&gt;&lt;b&gt;Nola Zuhana, M.Kom&lt;/b&gt; &mdash; menjabat sebagai Staf Seksi Perencanaan Anggaran &amp;amp; Kerja Tahunan pada 2 November 2026.&lt;/li&gt;&lt;li&gt;&lt;b&gt;Rina Mayang Sari, S.E&lt;/b&gt; &mdash; sebelumnya menjabat sebagai Staf Seksi Perencanaan Anggaran &amp;amp; Kerja Tahunan, hingga dilantik sebagai Kepala Seksi Evaluasi Anggaran pada 30 Oktober 2026.&lt;/li&gt;&lt;/ul&gt;">
+                <div class="so-photo"><span class="ini">NZ</span><img src="foto/nola-zuhana.jpg" alt="Nola Zuhana" onerror="this.style.display='none'"></div>
+                <span class="so-badge">Staf</span>
+                <h3 class="so-name">Nola Zuhana, M.Kom</h3>
+                <p class="so-role">Staf Seksi Perencanaan Anggaran &amp; Kerja Tahunan</p>
                 <div class="so-tap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Klik untuk detail</div>
               </div>
             </div>
@@ -511,7 +525,7 @@
       return 'M'+a.x+','+a.bot+' L'+a.x+','+midY+' L'+b.x+','+midY+' L'+b.x+','+b.top;
     }
 
-    var ids=['n-dir','n-zi','n-fl','n-ed','n-me','n-ir','n-ae','n-er','n-su','n-ri','n-mr2'];
+    var ids=['n-dir','n-zi','n-fl','n-ed','n-me','n-ir','n-ae','n-er','n-su','n-nz','n-ri','n-mr2'];
     for(var i=0;i<ids.length;i++){ if(!document.getElementById(ids[i])) return; }
 
     var P={};
@@ -530,6 +544,7 @@
     paths.push(pathV(P['n-fl'],P['n-er']));
     // Kasi -> Staf
     paths.push(pathV(P['n-ed'],P['n-su']));
+    paths.push(pathV(P['n-ir'],P['n-nz']));
     paths.push(pathV(P['n-ae'],P['n-ri']));
     paths.push(pathV(P['n-er'],P['n-mr2']));
 
